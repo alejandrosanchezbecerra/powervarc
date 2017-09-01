@@ -109,8 +109,9 @@ sample_cluster <- function(clustervar,theta) {
 
 }
 
-simulate_test <- function(p_vec,theta) {
 
+data_generate <- function(p_vec,theta) {
+  
   a_vec         <- c(theta$a0,theta$a1)
   cluster_num   <- theta$cluster_num
   cluster_size  <- theta$cluster_size
@@ -120,6 +121,24 @@ simulate_test <- function(p_vec,theta) {
   sample <- sample_cluster('clustervar',theta)
   sample <- sample_randomize(sample,'clustervar',p_vec,theta)
   sample <- sample_outcome(sample,'treatment_tilde','clustervar',theta)
+  
+  return(sample)
+  
+}
+
+simulate_test <- function(p_vec,theta) {
+
+  sample <- data_generate(p_vec,theta)
+  
+  # a_vec         <- c(theta$a0,theta$a1)
+  # cluster_num   <- theta$cluster_num
+  # cluster_size  <- theta$cluster_size
+  # param         <- c(theta$beta,theta$sigma_u,theta$sigma_e)
+  # 
+  # # Create simulate
+  # sample <- sample_cluster('clustervar',theta)
+  # sample <- sample_randomize(sample,'clustervar',p_vec,theta)
+  # sample <- sample_outcome(sample,'treatment_tilde','clustervar',theta)
   # sample <- invisible(plm::pdata.frame(sample,index = 'clustervar'))
 
   # Carry out hypothesis test
@@ -165,7 +184,7 @@ simulate_test <- function(p_vec,theta) {
 test_fn <- function(i,p_vec,theta) {
   
   bindToEnv(objNames=c('sample_randomize','sample_outcome','sample_cluster',
-                       'simulate_test','coeftest','plm'))
+                       'simulate_test','coeftest','plm','data_generate'))
   
   function(x) {
     simulate_test(p_vec[i,],theta[i,])
